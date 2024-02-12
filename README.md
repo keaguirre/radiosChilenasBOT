@@ -1,4 +1,4 @@
-# Nombre del Bot de Discord
+# Radios Chilenas Discord BOT
 
 ## Descripción
 
@@ -7,10 +7,6 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 ### Características principales
 
 - **Reproducción de audio desde URLs:** El bot puede unirse a un canal de voz y reproducir audio desde URLs proporcionadas por los usuarios.
-  
-- **Gestión de mensajes:** Proporciona comandos para administrar mensajes, como borrar mensajes en un canal de texto.
-
-- **Comandos personalizados:** Permite la creación de comandos personalizados para realizar acciones específicas según las necesidades del servidor.
 
 ## Tecnologías utilizadas
 
@@ -19,3 +15,8 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - **discord.py:** Biblioteca de Python utilizada para interactuar con la API de Discord y desarrollar bots de Discord.
 
 ## Instalación y Uso
+
+- pip install -r requirements.txt
+- Adicional deberás instalar el paquete ffmpeg
+    - Windows: Descarga el paquete de ffmpeg desde el sitio web oficial: [https://ffmpeg.org/](https://ffmpeg.org/).
+    - Linux: https://ffmpeg.org/download.html#build-linux o <code>sudo apt install ffmpeg</code> para debian
