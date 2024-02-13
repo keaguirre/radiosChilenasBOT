@@ -15,8 +15,12 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - **discord.py:** Biblioteca de Python utilizada para interactuar con la API de Discord y desarrollar bots de Discord.
 
 ## Instalación y Uso
-
+- python3 -m venv env
 - pip install -r requirements.txt
 - Adicional deberás instalar el paquete ffmpeg
     - Windows: Descarga el paquete de ffmpeg desde el sitio web oficial: [https://ffmpeg.org/](https://ffmpeg.org/).
     - Linux: https://ffmpeg.org/download.html#build-linux o <code>sudo apt install ffmpeg</code> para debian
+
+# To do's
+- Agregar boton desconectar al embed de transmitiendo
+- Sugerencias al escribir los comandos - debo cambiarme del '!' al '/'?

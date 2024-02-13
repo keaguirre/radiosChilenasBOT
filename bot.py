@@ -34,9 +34,10 @@ URLs = {
     'imagina': 'https://playerservices.streamtheworld.com/api/livestream-redirect/IMAGINA_SC',
     'la-retro': 'https://s2.radio.co/s9ecef4f68/',
     '40-Principales2': 'https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_CHILE_SC',
-    'puduwel': 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL_SCS',
+    'puduwel': 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL_SCS', #ta mala revisar
     'rockandpop': 'https://playerservices.streamtheworld.com/api/livestream-redirect/ROCK_AND_POP_SC',
 }
+comandos_conocidos = '!transmitir\n!listar_radios\n!desconectar\n!listar_comandos'
 
 @bot.event
 async def on_ready():
@@ -46,28 +47,62 @@ async def on_ready():
 async def transmitir(ctx, nombre_url: str):
     url = URLs.get(nombre_url.lower())
     if url is None:
-        await ctx.send("Nombre de la radio no válido.❌")
+        embed = discord.Embed(title="Nombre de la radio no válido.❌", color=discord.Color.red())
+        await ctx.send(embed=embed)
         return
-    
+
     voice_channel = ctx.author.voice.channel
-    if voice_channel:
-        voice_client = await voice_channel.connect()
+    if not voice_channel:
+        embed = discord.Embed(title="Debes estar en un canal de voz para usar este comando.🗿", color=discord.Color.red())
+        await ctx.send(embed=embed)
+        return
+
+    # Obtener el cliente de voz asociado al servidor donde se emitió el comando
+    voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    if voice_client and voice_client.is_connected() and voice_client.channel == voice_channel:
+        # El bot ya está en el canal de voz solicitado, no es necesario conectar de nuevo
+        voice_client.stop()
         voice_client.play(discord.FFmpegPCMAudio(url))
-    else:
-        await ctx.send("Debes estar en un canal de voz para usar este comando.🗿")
+        embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
+        await ctx.send(embed=embed)
+        return
+    # El bot no está en el canal de voz solicitado o está en otro canal, conectarse al nuevo canal
+    if voice_client:
+        await voice_client.disconnect()
+
+    voice_client = await voice_channel.connect()
+    voice_client.play(discord.FFmpegPCMAudio(url))
+    file = discord.File("Assets/radio.png", filename="radio.png")
+    embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
+    embed.set_image(url="attachment://radio.png")
+    embed.set_footer(text="Web illustrations by Storyset", icon_url=None)
+    await ctx.send(embed=embed, file=file)
 
 @bot.command()
 async def listar_radios(ctx):
-    await ctx.send("Lista de Radios:")
+    embed_content = ""
     for nombre, url in URLs.items():
-        await ctx.send(f"{nombre}")
+        embed_content += f"• {nombre}\n"
+    embed = discord.Embed(title="Lista de Radios:", description=embed_content, color=discord.Color.random())
+    await ctx.send(embed=embed)
 
 @bot.command()
-async def calabaza(ctx):
+async def desconectar(ctx):
     voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if voice_client:
+        embed = discord.Embed(title="Bai", color=discord.Color.random())
+        await ctx.send(embed=embed)
         await voice_client.disconnect()
     else:
-        await ctx.send("El bot no está conectado a un canal de voz.🟡")
+        embed = discord.Embed(title="El bot no está conectado a un canal de voz. 🟡", color=discord.Color.random())
+        await ctx.send(embed=embed)
+
+#Events
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        embed = discord.Embed(title=f"No se encontró el comando.", description=f"¿Quisiste decir alguno de estos?\n\n{comandos_conocidos}", color=discord.Color.random())
+        await ctx.send(embed=embed)
 
 bot.run(TOKEN)
