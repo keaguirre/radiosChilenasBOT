@@ -119,6 +119,11 @@ async def on_command_error(ctx, error):
         embed = discord.Embed(title=f"No se encontró el comando.", description=f"¿Quisiste decir alguno de estos?\n\n{comandos_conocidos}", color=discord.Color.random())
         await ctx.send(embed=embed)
 
+@bot.command()
+async def listar_comandos(ctx):
+    embed = discord.Embed(title="Lista de Comandos:", description=comandos_conocidos, color=discord.Color.random())
+    await ctx.send(embed=embed)
+
 async def detener_bot(bot):
     await bot.close()
 
