@@ -24,3 +24,5 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 # To do's
 - Agregar boton desconectar al embed de transmitiendo
 - Sugerencias al escribir los comandos - debo cambiarme del '!' al '/'?
+- Audios de presentacion a la radio
+- Falta afinar las pruebas unitarias para que el proceso termine exitosamente.

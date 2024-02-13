@@ -65,7 +65,10 @@ async def transmitir(ctx, nombre_url: str):
         voice_client.stop()
         voice_client.play(discord.FFmpegPCMAudio(url))
         embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
-        await ctx.send(embed=embed)
+        button = discord.ui.Button(style=discord.ButtonStyle.primary, label="Desconectar radio📻", custom_id="desconectar")
+        view = discord.ui.View()
+        view.add_item(button)
+        await ctx.send(embed=embed, view=view)
         return
     # El bot no está en el canal de voz solicitado o está en otro canal, conectarse al nuevo canal
     if voice_client:
@@ -77,7 +80,18 @@ async def transmitir(ctx, nombre_url: str):
     embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
     embed.set_image(url="attachment://radio.png")
     embed.set_footer(text="Web illustrations by Storyset", icon_url=None)
-    await ctx.send(embed=embed, file=file)
+    button = discord.Button(style=discord.ButtonStyle.red, label="Desconectar radio📻")
+    # Enviar el mensaje con el embed
+    message = await ctx.send(embed=embed)
+    # Agregar el botón al mensaje
+    await message.add_components(button)
+    # Esperar la interacción del usuario con el botón
+    interaction = await bot.wait_for("button_click", check=lambda i: i.component == button)
+    # Verificar si la interacción se refiere al botón correcto
+    if interaction.component == button:
+        # Insertar aquí la lógica para desconectar al bot del canal de voz
+        await interaction.response.send_message("Ejecutando comando !desconectar")
+
 
 @bot.command()
 async def listar_radios(ctx):
@@ -105,4 +119,8 @@ async def on_command_error(ctx, error):
         embed = discord.Embed(title=f"No se encontró el comando.", description=f"¿Quisiste decir alguno de estos?\n\n{comandos_conocidos}", color=discord.Color.random())
         await ctx.send(embed=embed)
 
+async def detener_bot(bot):
+    await bot.close()
+
 bot.run(TOKEN)
+
