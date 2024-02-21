@@ -22,6 +22,7 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
     - Linux: https://ffmpeg.org/download.html#build-linux o <code>sudo apt install ffmpeg</code> para debian
 
 # To do's
+- Falta fixear que ponga la img en el embed
 - Agregar boton desconectar al embed de transmitiendo
 - Sugerencias al escribir los comandos - debo cambiarme del '!' al '/'?
 - Audios de presentacion a la radio
