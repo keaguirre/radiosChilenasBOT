@@ -22,6 +22,7 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
     - Linux: https://ffmpeg.org/download.html#build-linux o <code>sudo apt install ffmpeg</code> para debian
 
 # To do's
+- Add sleep-time to read the msg before the cli exit cuz password failed
 - Agregar GH Actions para que compile en cada push (pyinstaller -F -n bot.exe -c bot.py desde win)
 - Falta fixear que ponga la img en el embed
 - Agregar boton desconectar al embed de transmitiendo
