@@ -37,3 +37,4 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
     - pip freeze > requirements.txt
 - Compile .exe:
     - pyinstaller -F -n bot.exe -c bot.py
+    - pyinstaller --onefile --add-binary "Assets/ffmpeg.exe:." --name "radiosChilenas BOT" --icon "Assets/icon.ico" bot.py
