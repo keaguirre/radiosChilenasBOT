@@ -4,6 +4,7 @@
 #sudo apt install ffmpeg
 #pyinstaller bot.spec para generar el portable
 import sys
+import time
 import discord
 from discord.ext import commands
 
@@ -160,4 +161,5 @@ if token_descifrado:
 else:
     def mostrar_mensaje():
         print("Error\n", "No se pudo descifrar el token. Verifica la clave secreta.")
+        time.sleep(5)
         sys.exit()
