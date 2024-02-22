@@ -30,7 +30,7 @@ jobs:
     - name: Check Previous Release
       id: check_previous_release
       run: |
-        latest_release=$(git tag -l --sort=-v:refname | head -n 1)
+        $latest_release = git describe --tags --abbrev=0
         if (-not $latest_release) {
           Write-Output "::set-output name=previous_version::0.0.1"
         } else {
