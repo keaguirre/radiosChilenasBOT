@@ -31,12 +31,12 @@ jobs:
       id: check_previous_release
       run: |
         latest_release=$(git tag -l --sort=-v:refname | head -n 1)
-        if [ -z "$latest_release" ]; then
-          echo "::set-output name=previous_version::0.0.1"
-        else
-          echo "::set-output name=previous_version::$latest_release"
-        fi
-
+        if (-not $latest_release) {
+          Write-Output "::set-output name=previous_version::0.0.1"
+        } else {
+          Write-Output "::set-output name=previous_version::$latest_release"
+        }
+      
     - name: Set new release version
       id: set_new_version
       if: steps.check_previous_release.outputs.previous_version != ''
