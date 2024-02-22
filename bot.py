@@ -34,6 +34,7 @@ def descifrar_token(clave_secreta, token_cifrado):
     fernet = Fernet(clave_secreta)
     try:
         token_descifrado = fernet.decrypt(token_cifrado).decode()
+        
         return token_descifrado
     except Exception as e:
         # print("Error al descifrar el token:",e)
@@ -156,7 +157,7 @@ if token_descifrado:
     async def detener_bot(bot):
         await bot.close()
 
-    bot.run(TOKEN)
+    bot.run(token_descifrado)
 
 else:
     def mostrar_mensaje():
