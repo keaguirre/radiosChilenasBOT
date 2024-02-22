@@ -28,3 +28,12 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - Agregar boton desconectar al embed de transmitiendo
 - Sugerencias al escribir los comandos - debo cambiarme del '!' al '/'?
 - Falta afinar las pruebas unitarias para que el proceso termine exitosamente.
+
+### Setting the env
+- python -m venv env
+- win: env\Scripts\activate linux: source/bin/activate
+- pip install -r requirements.txt
+- Update req.txt:
+    - pip freeze > requirements.txt
+- Compile .exe:
+    - pyinstaller -F -n bot.exe -c bot.py
