@@ -1,0 +1,65 @@
+name: Build and Publish Bot Executable
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build Executable
+      run: |
+        pyinstaller -F -n bot.exe -c bot.py
+
+    - name: Check Previous Release
+      id: check_previous_release
+      run: |
+        latest_release=$(git tag -l --sort=-v:refname | head -n 1)
+        if [ -z "$latest_release" ]; then
+          echo "::set-output name=previous_version::0.0.1"
+        else
+          echo "::set-output name=previous_version::$latest_release"
+        fi
+
+    - name: Set new release version
+      id: set_new_version
+      if: steps.check_previous_release.outputs.previous_version != ''
+      run: echo "::set-output name=new_version::$(echo "${{ steps.check_previous_release.outputs.previous_version }}" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')"
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.set_new_version.outputs.new_version }}
+        release_name: Release ${{ steps.set_new_version.outputs.new_version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Executable to Release
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/bot.exe
+        asset_name: bot.exe
+        asset_content_type: application/octet-stream
