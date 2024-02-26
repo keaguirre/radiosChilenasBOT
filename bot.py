@@ -3,11 +3,11 @@
 #pip install PyNaCl
 #sudo apt install ffmpeg
 #pyinstaller bot.spec para generar el portable
+import subprocess
 import sys
 import time
 import discord
 from discord.ext import commands
-
 intents = discord.Intents.all()  # Obtiene los intentos predeterminados
 intents.typing = False
 intents.presences = False
@@ -40,6 +40,21 @@ def descifrar_token(clave_secreta, token_cifrado):
         # print("Error al descifrar el token:",e)
         sys.exit()
 
+# Definir función para instalar ffmpeg
+def install_ffmpeg():
+    try:
+        subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print('FFmpeg ya instalado')
+        return True  # ffmpeg está instalado
+    except FileNotFoundError:
+        try:
+            subprocess.run(["winget", "install", "FFmpeg (Essentials Build)", "--silent"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("Instalación exitosa")
+            return True  # Instalación exitosa
+        except subprocess.CalledProcessError:
+            print("Instalacion de FFmpeg fallida")
+            return False  # No se pudo instalar ffmpeg     
+
 token_cifrado = b'gAAAAABl1ZLLk40hYeb9x9lor-2HcZfg5JkAWy8CsSQDk1FKdGOKIVY7zAvH5FYL6bQ3u8nNQ8NA_aPsFjiMYsfG-ZNuorFER_pOAxS84SsVYhy8rufYGLYGuWwGmEBljQ2G5_WjecWfxAjcWM4srwRWHqaGqCEd-PaA8uhhY4l2mPULEB4lKbk='
 clave_secreta = obtener_clave_secreta()
 try:
@@ -48,7 +63,8 @@ except:
     print("Error\nClave secreta incorrecta, Verifica la clave secreta.")
     sys.exit()
 
-if token_descifrado:
+if token_descifrado and install_ffmpeg():
+
     # Diccionario de nombres de URLs
     URLs = {
         'adn': 'https://15723.live.streamtheworld.com/ADN_SC',

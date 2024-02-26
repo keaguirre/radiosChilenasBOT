@@ -22,6 +22,7 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
     - Linux: https://ffmpeg.org/download.html#build-linux o <code>sudo apt install ffmpeg</code> para debian
 
 # To do's
+- idea: limit 15 psswd tries, 15+ added to blacklist microservice flask with sqlite3
 - Add sleep-time to read the msg before the cli exit cuz password failed
 - Agregar GH Actions para que compile en cada push (pyinstaller -F -n bot.exe -c bot.py desde win)
 - Falta fixear que ponga la img en el embed
@@ -38,3 +39,4 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - Compile .exe:
     - pyinstaller -F -n bot.exe -c bot.py
     - pyinstaller --onefile --add-binary "Assets/ffmpeg.exe:." --name "radiosChilenas BOT" --icon "Assets/icon.ico" bot.py
+    - pyinstaller --onefile --name "radiosChilenasBOT" --icon "Assets/icon.ico" bot.py
