@@ -21,50 +21,20 @@ from cryptography.fernet import Fernet
 permissions_integer=4947805613120
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-load_dotenv()
-TOKEN = os.getenv('TOKEN')
-
-def obtener_clave_secreta():
-    # Solicita la clave secreta por consola
-    clave_secreta = input("Ingrese la clave secreta: ").encode()
-    return clave_secreta
-
-def descifrar_token(clave_secreta, token_cifrado):
-    # Crea un objeto Fernet con la clave secreta
-    fernet = Fernet(clave_secreta)
-    try:
-        token_descifrado = fernet.decrypt(token_cifrado).decode()
-        
-        return token_descifrado
-    except Exception as e:
-        # print("Error al descifrar el token:",e)
-        sys.exit()
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 # Definir función para instalar ffmpeg
 def install_ffmpeg():
     try:
-        subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print('FFmpeg ya instalado')
-        return True  # ffmpeg está instalado
-    except FileNotFoundError:
-        try:
-            subprocess.run(["winget", "install", "FFmpeg (Essentials Build)", "--silent"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print("Instalación exitosa")
-            return True  # Instalación exitosa
-        except subprocess.CalledProcessError:
-            print("Instalacion de FFmpeg fallida")
-            return False  # No se pudo instalar ffmpeg     
+        subprocess.run(["apt-get", "update"], check=True)
+        subprocess.run(["apt-get", "install", "-y", "ffmpeg"], check=True)
+        print('FFmpeg installed successfully')
+        return True  # ffmpeg is installed
+    except subprocess.CalledProcessError:
+        print("Failed to install FFmpeg")
+        return False  # Failed to install ffmpeg
 
-token_cifrado = b'gAAAAABl1ZLLk40hYeb9x9lor-2HcZfg5JkAWy8CsSQDk1FKdGOKIVY7zAvH5FYL6bQ3u8nNQ8NA_aPsFjiMYsfG-ZNuorFER_pOAxS84SsVYhy8rufYGLYGuWwGmEBljQ2G5_WjecWfxAjcWM4srwRWHqaGqCEd-PaA8uhhY4l2mPULEB4lKbk='
-clave_secreta = obtener_clave_secreta()
-try:
-    token_descifrado = descifrar_token(clave_secreta, token_cifrado)
-except:
-    print("Error\nClave secreta incorrecta, Verifica la clave secreta.")
-    sys.exit()
-
-if token_descifrado and install_ffmpeg():
-
+if DISCORD_TOKEN and install_ffmpeg():
     # Diccionario de nombres de URLs
     URLs = {
         'adn': 'https://15723.live.streamtheworld.com/ADN_SC',
@@ -173,10 +143,13 @@ if token_descifrado and install_ffmpeg():
     async def detener_bot(bot):
         await bot.close()
 
-    bot.run(token_descifrado)
+    bot.run(DISCORD_TOKEN)
 
 else:
-    def mostrar_mensaje():
-        print("Error\n", "No se pudo descifrar el token. Verifica la clave secreta.")
-        time.sleep(5)
-        sys.exit()
+    if DISCORD_TOKEN is None:
+        def mostrar_mensaje():
+            print("Error\n", "No se pudo encontrar el token. Verifica la clave secreta.")
+            time.sleep(5)
+            sys.exit()
+
+        mostrar_mensaje()
