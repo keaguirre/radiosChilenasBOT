@@ -39,3 +39,49 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 
 - Run container:
     - docker run -p 5000:5000 --name radio-container radio-bot
+
+
+# AZ Function
+
+Flujo Revisado usando Azure Functions
+
+    Web Estática:
+        La página web estática envía una solicitud POST a una Azure Function con el comando (start o stop).
+
+    Azure Function:
+        Recibe la solicitud POST.
+        Usa Azure SDK o Azure CLI para iniciar o detener el contenedor del bot de Discord.
+        Obtiene el token de Discord desde Azure Key Vault.
+
+Implementación de Azure Function
+## 1.  Crear una Azure Function en Python
+
+Puedes usar el siguiente código para crear una Azure Function que maneje el inicio y la detención del contenedor:
+
+1.1 Instala las herramientas necesarias:
+    Asegúrate de tener Azure CLI y las herramientas de Azure Functions instaladas.
+
+1.2 Código de la Azure Function:
+    Aquí hay un ejemplo de cómo podría verse el código de la Azure Function en Python: -> az-function.py
+
+## 2. Configuración de Azure Function
+
+Configura las Variables de Entorno:
+    Configura las variables de entorno necesarias en tu Azure Function App para AZURE_SUBSCRIPTION_ID, RESOURCE_GROUP, y cualquier otra que necesites.
+
+Despliega la Azure Function:
+    Usa Azure CLI o Azure Portal para desplegar la Azure Function.
+
+## 3. AZ CLI bash
+### Crear una nueva Azure Function App
+az functionapp create --resource-group <nombre_del_grupo_de_recursos> --consumption-plan-location eastus --runtime python --functions-version 3 --name <nombre_de_tu_funcion> --storage-account <nombre_de_tu_cuenta_de_almacenamiento>
+
+### Desplegar el código a la Azure Function
+func azure functionapp publish <nombre_de_tu_funcion>
+
+### Resumen del Flujo
+
+1. Web Estática: Envia solicitudes POST a Azure Function con los comandos start o stop.
+2. Azure Function: Recibe el comando, obtiene el token de Discord desde Azure Key Vault, y maneja el inicio o la detención del contenedor usando Azure Container Instances.
+
+Este enfoque mantiene toda la lógica dentro del ecosistema de Azure, lo que puede simplificar la configuración y el mantenimiento, además de aprovechar las capacidades serverless para reducir costos cuando el bot no está en uso.
