@@ -3,7 +3,6 @@ import azure.functions as func
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
-from azure.mgmt.containerinstance.models import ContainerGroup, Container, ContainerPort, ResourceRequirements, OperatingSystemTypes, EnvironmentVariable
 
 # Configuración de credenciales y variables
 credential = DefaultAzureCredential()
@@ -25,33 +24,13 @@ except Exception as e:
 # Cliente para interactuar con Azure Container Instances
 aci_client = ContainerInstanceManagementClient(credential, subscription_id)
 
-def create_container_instance(resource_group, container_instance_name):
-    logging.info(f"Creating container instance: {container_instance_name}")
-    # Configurar el contenedor
-    container_name = container_instance_name
-    image_name = "keaguirre/radio-bot"  # Replace with your own Docker repository and image name
-    container_port = 5000
+def start_container_instance(resource_group, container_instance_name):
+    logging.info(f"Starting container instance: {container_instance_name}")
+    aci_client.container_groups.begin_start(resource_group, container_instance_name)
 
-        # Variables de entorno para el contenedor
-    environment_variables = [
-        EnvironmentVariable(name="DISCORD_TOKEN", value=secret_client.get_secret("discord").value),
-    ]
-    
-    container_resource_requirements = ResourceRequirements(requests={"memory_in_gb": 1.5, "cpu": 1.0})
-    ports = [ContainerPort(protocol="TCP", port=container_port)]
-    container = Container(name=container_name, image=image_name, ports=ports, resources=container_resource_requirements)
-    
-    # Configurar el grupo de contenedores
-    container_group_name = container_instance_name
-    container_group = ContainerGroup(location="eastus", containers=[container], os_type=OperatingSystemTypes.linux)
-    
-    aci_client.container_groups.begin_create_or_update(resource_group, container_group_name, container_group)
-    logging.info(f"Container instance {container_instance_name} created.")
-
-def delete_container_instance(resource_group, container_instance_name):
-    logging.info(f"Deleting container instance: {container_instance_name}")
+def stop_container_instance(resource_group, container_instance_name):
+    logging.info(f"Stopping container instance: {container_instance_name}")
     aci_client.container_groups.begin_delete(resource_group, container_instance_name)
-    logging.info(f"Container instance {container_instance_name} deleted.")
 
 def get_container_instance_state(resource_group, container_instance_name):
     logging.info(f"Getting state of container instance: {container_instance_name}")
@@ -66,11 +45,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         action = req_body.get('action')
         
         if action == "start":
-            create_container_instance(resource_group, container_instance_name)
-            return func.HttpResponse(f"Container instance {container_instance_name} created.", status_code=200)
+            start_container_instance(resource_group, container_instance_name)
+            return func.HttpResponse(f"Container instance {container_instance_name} started.", status_code=200)
         elif action == "stop":
-            delete_container_instance(resource_group, container_instance_name)
-            return func.HttpResponse(f"Container instance {container_instance_name} deleted.", status_code=200)
+            stop_container_instance(resource_group, container_instance_name)
+            return func.HttpResponse(f"Container instance {container_instance_name} stopped.", status_code=200)
         elif action == "state":
             container_state = get_container_instance_state(resource_group, container_instance_name)
             return func.HttpResponse(f"Container instance {container_instance_name} state: {container_state}", status_code=200)
