@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y git
 RUN git clone https://github.com/keaguirre/radiosChilenasBOT.git .
 
 # Copiar los archivos de requisitos e instalar las dependencias
-# Instalar las dependencias directamente desde el repositorio clonado
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Exponer el puerto en el que se ejecutará la aplicación
