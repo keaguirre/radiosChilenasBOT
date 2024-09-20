@@ -49,7 +49,7 @@ if DISCORD_TOKEN and install_ffmpeg():
         'imagina': 'https://playerservices.streamtheworld.com/api/livestream-redirect/IMAGINA_SC',
         'la-retro': 'https://s2.radio.co/s9ecef4f68/',
         '40-Principales2': 'https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_CHILE_SC',
-        'puduwel': 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL_SCS', #ta mala revisar
+        'puduwel': 'https://playerservices.streamtheworld.com/api/livestream-redirect/PUDAHUEL_SC',
         'rockandpop': 'https://playerservices.streamtheworld.com/api/livestream-redirect/ROCK_AND_POP_SC',
     }
     comandos_conocidos = '!transmitir\n!listar_radios\n!desconectar\n!listar_comandos'

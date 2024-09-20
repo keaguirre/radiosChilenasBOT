@@ -85,3 +85,7 @@ func azure functionapp publish <nombre_de_tu_funcion>
 2. Azure Function: Recibe el comando, obtiene el token de Discord desde Azure Key Vault, y maneja el inicio o la detención del contenedor usando Azure Container Instances.
 
 Este enfoque mantiene toda la lógica dentro del ecosistema de Azure, lo que puede simplificar la configuración y el mantenimiento, además de aprovechar las capacidades serverless para reducir costos cuando el bot no está en uso.
+
+- el function toma los tokens de discord y github desde keyvault y los usa para iniciar y detener el container
+Run for docker dev
+docker run -p 5000:5000 -i --name radiosChilenasBOT keaguirre/radiosChilenasBOT:latest docker /bin/bash
