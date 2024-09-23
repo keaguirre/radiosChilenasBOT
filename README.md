@@ -89,3 +89,5 @@ Este enfoque mantiene toda la lógica dentro del ecosistema de Azure, lo que pue
 - el function toma los tokens de discord y github desde keyvault y los usa para iniciar y detener el container
 Run for docker dev
 docker run -p 5000:5000 -i --name radiosChilenasBOT keaguirre/radiosChilenasBOT:latest docker /bin/bash
+
+pip freeze > requirements.txt is a command used in the context of Python programming to generate a file called requirements.txt. This file contains a list of all the installed packages in your Python environment, along with their corresponding versions.

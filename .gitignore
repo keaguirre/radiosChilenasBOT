@@ -3,3 +3,7 @@ env
 __pycache__
 build
 dist
+ffmpeg
+*.spec
+*.exe
+winenv
