@@ -7,6 +7,7 @@ import tkinter as tk
 import asyncio
 
 from discord.ext import commands
+from dotenv import load_dotenv
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -43,9 +44,12 @@ URLs = {
 
 comandos_conocidos = '!transmitir\n!listar_radios\n!desconectar\n!listar_comandos'
 
-DISCORD_TOKEN = input("Por favor, introduce el token de Discord: ")
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
+
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 if not DISCORD_TOKEN:
-    print("No se proporcionó un token de Discord.")
+    print("No se proporcionó un token de Discord en el archivo .env.")
     sys.exit(1)
 
 @bot.event
@@ -60,6 +64,7 @@ class DesconectarView(discord.ui.View):
         voice_client = discord.utils.get(bot.voice_clients, guild=interaction.guild)
         if voice_client and voice_client.is_connected():
             await voice_client.disconnect()
+            await bot.change_presence(activity=discord.Game(name="Esperando"))
             await interaction.response.send_message("Radio desconectada.🔌", ephemeral=True)
         else:
             await interaction.response.send_message("El bot no está conectado a un canal de voz. 🟡", ephemeral=True)
