@@ -51,6 +51,7 @@ if not DISCORD_TOKEN:
 @bot.event
 async def on_ready():
     print(f'Bot conectado como {bot.user}')
+    await bot.change_presence(activity=discord.Game(name="Esperando"))
 
 # Definir la vista para el botón de desconexión
 class DesconectarView(discord.ui.View):
@@ -87,15 +88,16 @@ async def transmitir(ctx, nombre_url: str):
     voice_client.stop()
     voice_client.play(discord.FFmpegPCMAudio(url, executable=ffmpeg_executable))
 
-    image_path = os.path.join(base_path, 'Assets', 'radio.png')
-    file = discord.File(image_path, filename="radio.png")
-
     embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
-    embed.set_image(url="attachment://radio.png")
-    embed.set_footer(text="Web illustrations by Storyset")
 
     view = DesconectarView()
-    await ctx.send(embed=embed, file=file, view=view)
+    await ctx.send(embed=embed, view=view)
+
+    # Cambiar el estado del bot para reflejar que está transmitiendo la radio
+    await bot.change_presence(activity=discord.Activity(
+        type=discord.ActivityType.listening, 
+        name=f"Radio {nombre_url}"
+    ))
 
 @bot.command()
 async def listar_radios(ctx):
@@ -109,7 +111,12 @@ async def desconectar(ctx):
     if voice_client:
         embed = discord.Embed(title="Desconectando...", color=discord.Color.random())
         await ctx.send(embed=embed)
+        # Restablecer el estado del bot a "Esperando transmitir radios 🎶"
+        await bot.change_presence(activity=discord.Game(name="Esperando"))
         await voice_client.disconnect()
+
+        # Restablecer el estado del bot
+        await bot.change_presence(activity=discord.Game(name="Esperando"))
     else:
         embed = discord.Embed(title="El bot no está conectado a un canal de voz. 🟡", color=discord.Color.random())
         await ctx.send(embed=embed)
