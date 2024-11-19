@@ -28,11 +28,16 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - Update req.txt:
     - pip freeze > requirements.txt
 
+### .env
+- Crea un archivo .env con las siguientes variables:
+    - DISCORD_TOKEN=your_token
+
 - Build a docker image:
-    - docker build -t radio-bot .
+    - docker build -t radio-img .
     
 - Run container:
-    - docker run -p 5000:5000 --name radio-container radio-bot
-    
+    - docker run -p 5000:5000 --name radio-container -e DISCORD_TOKEN='' radio-img
+
 - Test container:
-    - docker run --name [container-name] -a stdin -a stdout -t -i python:3.12-slim-bullseye /bin/bash
+    - docker run --name radio-container -a stdin -a stdout -t -i radio-img -e DISCORD_TOKEN='' /bin/bash
+    - docker run --name [container-name] -a stdin -a stdout -t -i python:3.12-slim-bullseye -e DISCORD_TOKEN=''/bin/bash

@@ -5,7 +5,7 @@ FROM python:3.12-slim-bullseye
 WORKDIR /app
 
 # Instalar git y otras dependencias necesarias
-RUN apt-get update && apt-get install -y git ffmpeg python3-tk
+RUN apt-get update && apt-get install -y git python3-tk ffmpeg
 
 # Clonar el repositorio de GitHub
 RUN git clone https://github.com/keaguirre/radiosChilenasBOT .

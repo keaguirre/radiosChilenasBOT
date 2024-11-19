@@ -23,7 +23,7 @@ else:
     base_path = os.path.dirname(os.path.abspath(__file__))
 
 # Ruta al ejecutable de ffmpeg
-ffmpeg_executable = os.path.join(base_path, 'ffmpeg', 'ffmpeg.exe')
+ffmpeg_executable = os.path.join(base_path, 'ffmpeg')
 
 URLs = {
     'adn': 'https://15723.live.streamtheworld.com/ADN_SC',
