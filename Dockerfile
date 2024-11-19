@@ -7,14 +7,8 @@ WORKDIR /app
 # Instalar git y otras dependencias necesarias
 RUN apt-get update && apt-get install -y git ffmpeg
 
-# Definir la variable de entorno para el token de GitHub
-ARG GITHUB_TOKEN
-
 # Clonar el repositorio de GitHub
-RUN git clone https://${GITHUB_TOKEN}@github.com/keaguirre/radiosChilenasBOT.git .
-
-# Eliminar el token después de usarlo para garantizar que no quede en la imagen
-RUN unset GITHUB_TOKEN
+RUN git clone https://github.com/keaguirre/radiosChilenasBOT .
 
 # Copiar los archivos de requisitos e instalar las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
