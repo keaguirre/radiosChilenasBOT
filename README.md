@@ -38,6 +38,6 @@ Este repositorio contiene el código fuente de un bot de Discord desarrollado en
 - Run container:
     - docker run -p 5000:5000 --name radio-container -e DISCORD_TOKEN='' radio-img
 
-- Test container:
+- Dev container:
     - docker run --name radio-container -a stdin -a stdout -t -i radio-img -e DISCORD_TOKEN='' /bin/bash
     - docker run --name [container-name] -a stdin -a stdout -t -i python:3.12-slim-bullseye -e DISCORD_TOKEN=''/bin/bash
