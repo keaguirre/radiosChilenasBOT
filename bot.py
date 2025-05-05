@@ -23,7 +23,7 @@ else:
     base_path = os.path.dirname(os.path.abspath(__file__))
 
 # Ruta al ejecutable de ffmpeg
-ffmpeg_executable = os.path.join(base_path, 'ffmpeg')
+ffmpeg_executable = 'ffmpeg'
 
 URLs = {
     'adn': 'https://15723.live.streamtheworld.com/ADN_SC',
@@ -85,24 +85,39 @@ async def transmitir(ctx, nombre_url: str):
     voice_channel = ctx.author.voice.channel
     voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
-    if voice_client and voice_client.is_connected():
-        await voice_client.move_to(voice_channel)
-    else:
-        voice_client = await voice_channel.connect()
+    try:
+        if voice_client and voice_client.is_connected():
+            await voice_client.move_to(voice_channel)
+        else:
+            voice_client = await voice_channel.connect()
 
-    voice_client.stop()
-    voice_client.play(discord.FFmpegPCMAudio(url, executable=ffmpeg_executable))
+        voice_client.stop()
+        voice_client.play(discord.FFmpegPCMAudio(url, executable=ffmpeg_executable), after=lambda e: print(f'Player error: {e}') if e else None)
 
-    embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
+        embed = discord.Embed(title=f"Transmitiendo radio {nombre_url} 📻", color=discord.Color.random())
+        view = DesconectarView()
+        await ctx.send(embed=embed, view=view)
 
-    view = DesconectarView()
-    await ctx.send(embed=embed, view=view)
+        # Cambiar el estado del bot para reflejar que está transmitiendo la radio
+        await bot.change_presence(activity=discord.Activity(
+            type=discord.ActivityType.listening,
+            name=f"Radio {nombre_url}"
+        ))
 
-    # Cambiar el estado del bot para reflejar que está transmitiendo la radio
-    await bot.change_presence(activity=discord.Activity(
-        type=discord.ActivityType.listening, 
-        name=f"Radio {nombre_url}"
-    ))
+    except discord.ClientException as e:
+        print(f"Error de cliente de Discord al reproducir: {e}")
+        embed = discord.Embed(title="Error al iniciar la transmisión de audio. ⚠️", description=f"Detalles: {e}", color=discord.Color.orange())
+        await ctx.send(embed=embed)
+        if voice_client and voice_client.is_connected():
+            await voice_client.disconnect()
+            await bot.change_presence(activity=discord.Game(name="Esperando"))
+    except Exception as e:
+        print(f"Otro error al reproducir audio: {e}")
+        embed = discord.Embed(title="Ocurrió un error inesperado al transmitir. ❌", description=f"Detalles: {e}", color=discord.Color.red())
+        await ctx.send(embed=embed)
+        if voice_client and voice_client.is_connected():
+            await voice_client.disconnect()
+            await bot.change_presence(activity=discord.Game(name="Esperando"))
 
 @bot.command()
 async def listar_radios(ctx):
@@ -113,15 +128,13 @@ async def listar_radios(ctx):
 @bot.command()
 async def desconectar(ctx):
     voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if voice_client:
+    if voice_client and voice_client.is_playing():
+        voice_client.stop() # Detener la reproducción antes de desconectar
+    if voice_client and voice_client.is_connected():
         embed = discord.Embed(title="Desconectando...", color=discord.Color.random())
         await ctx.send(embed=embed)
-        # Restablecer el estado del bot a "Esperando transmitir radios 🎶"
         await bot.change_presence(activity=discord.Game(name="Esperando"))
         await voice_client.disconnect()
-
-        # Restablecer el estado del bot
-        await bot.change_presence(activity=discord.Game(name="Esperando"))
     else:
         embed = discord.Embed(title="El bot no está conectado a un canal de voz. 🟡", color=discord.Color.random())
         await ctx.send(embed=embed)
